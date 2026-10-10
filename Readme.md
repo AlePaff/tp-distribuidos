@@ -1,9 +1,9 @@
 # TP Distribuidos
 
 ## Integrantes
-DEL PUP TOMAS GONZALO
-CANTERO ALAN EZEQUIEL
-PAFF ALEJANDRO
+- CANTERO ALAN EZEQUIEL
+- DEL PUP TOMAS GONZALO
+- PAFF ALEJANDRO
 
 ## Enlaces
 Kaggle: https://www.kaggle.com/code/francobar/wikipedia-article-analysis
