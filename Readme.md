@@ -16,4 +16,4 @@ Diagrama de actividad (Caso 1): https://drive.google.com/file/d/11pJBuKes8-56DHZ
 
 Diagrama de actividad (Caso 2): https://drive.google.com/file/d/1FHs77NdRV-znReiLoWGz8rThWMEAQi7C/view?usp=sharing
 
-
+Diagramas entrega Diseño -> Ver `informe-diseño-md`

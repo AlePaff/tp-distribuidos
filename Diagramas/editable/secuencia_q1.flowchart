@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant C as Cliente
+    participant GE as Gateway Entrada
+    participant F as Filtro <=2020
+    participant Q1 as Q1 Worker (English Filter)
+    participant GS as Gateway Salida
+
+    %% Flujo de Datos
+    C->>GE: TCP: DATA {article, client_id}
+    GE->>F: Enqueue (Cola General)
+    Note over F: Se fija que year <= 2020
+    F->>Q1: Enqueue (Cola Q1)
+    Note over Q1: Se fija que el mensaje tenga language == 'en'
+    Q1->>GS: Enqueue (Cola Resultados Q1)
+    Note over GS: Va mandando resultados parciales
+
+    GS->>C: TCP: RESULT_Q1 {url, date_modified}
+
+    %% Flujo de Control (EOF)
+    C->>GE: TCP: EOF (Fin de envío)
+    GE->>F: Enqueue EOF
+    F->>Q1: Enqueue EOF
+    Note over Q1: Ya no hay más artículos. Finaliza.
+    Q1->>GS: Q1_END
+    GS->>C: TCP: Q1_END (Consulta finalizada)

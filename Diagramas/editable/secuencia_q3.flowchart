@@ -1,0 +1,36 @@
+sequenceDiagram
+    participant C as Cliente
+    participant GE as Gateway Entrada
+    participant QWE as QWE (Extractor de Palabras)
+    participant R as Router Q3 (Hash)
+    participant AGG as SharedWordAgg 1
+    participant GS as Gateway Salida
+
+    %% Flujo de Datos
+    C->>GE: TCP: DATA {article, client_id}
+    GE->>QWE: Enqueue (Cola General)
+    Note over QWE: Extrae palabras únicas (sin stopwords)
+    
+    %% Palabra en Inglés
+    QWE->>R: WORD {word: "football", lang: "en"}
+    R->>AGG: hash("football") % N = 1
+    Note over AGG: Actualiza estado: {football: {en: true, fr: false}}
+    
+    %% Palabra en Francés (misma palabra)
+    QWE->>R: WORD {word: "football", lang: "fr"}
+    R->>AGG: hash("football") % N = 1
+    Note over AGG: Actualiza estado: {football: {en: true, fr: true}}
+    
+    %% Emisión de Resultado Parcial
+    Note over AGG: Ambos flags son true -> Emite resultado parcial
+    AGG->>GS: RESULT {word: "football"} (Parcial)
+    GS->>C: TCP: RESULT_Q3 {word: "football"}
+
+    %% Flujo de Control (EOF)
+    C->>GE: TCP: EOF
+    GE->>QWE: Enqueue EOF
+    QWE->>R: Enqueue EOF
+    R->>AGG: Enqueue EOF
+    Note over AGG: Ya no hay más palabras. Finaliza.
+    AGG->>GS: Q3_END
+    GS->>C: TCP: Q3_END (Consulta finalizada)
