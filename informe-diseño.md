@@ -49,4 +49,19 @@ Vista física de nodos y contenedores
 
 
 
+## Analisis sobre el volumen de datos
+| Language | Rows      | Shards | Size      |
+| -------- | --------- | ------ | --------- |
+| English  | 7,597,149 | 86     | 34.61 GiB |
+| French   | 2,871,732 | 26     | 9.81 GiB  |
+
+Total rows: 10,468,881
+Total Parquet size: 44.42 GiB
+
+
+### Supuestos
+- La idea es DISEÑARLO para que soporte los 10 millones de registros pero en pruebas locales se hace con un volumen reducido
+
+
+
 
