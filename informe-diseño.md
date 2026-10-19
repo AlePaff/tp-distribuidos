@@ -20,6 +20,7 @@ Vista de infraestructura lógica que detalla colas, workers y escalabilidad.
 
 ![](./Diagramas/robustez.jpg)
 
+
 ## Diagramas de Secuencia
 Vista dinámica que muestra el intercambio de mensajes en el tiempo.
 
@@ -61,6 +62,27 @@ Total Parquet size: 44.42 GiB
 
 ### Supuestos
 - La idea es DISEÑARLO para que soporte los 10 millones de registros pero en pruebas locales se hace con un volumen reducido
+
+
+
+## Decisiones de diseño
+- Separar los articulos por año y luego contar sus palabras es mejor que hacerlo en orden inverso, en la primer situación se descartan los mensajes pero la segunda implica contar todas las palabras de un abstract sin la garantía de que se vaya a filtrar posteriormente
+Esto ocurre tanto para Q1, Q2 y Q5
+
+- Se intentó tener un equilibrio entre las cantidades de operaciones que se repiten y las operaciones que se hacen dos veces redundante para no tener una logica muy compleja. Por ejemplo un modulo Sum podría ser usado por Q4 y Q5 pero al tener dos procesos totalmente distintos se prefirió "repetir" la logica del sumado, aunque por codigo es posible hacer optimizaciones. Lo mismo pensamos para los articulos <=2020 para Q1, Q2 y Q5. Se podría separar y volver a hacer un conteo para Q5 y luego para Q1 y Q2 pero se decidió unificar ya que la logica para filtrar no es muy compleja en este caso.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
