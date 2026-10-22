@@ -18,7 +18,7 @@ El DAG muestra la reutilización del filtro <= 2020 para Q1 y Q2, y la bifurcaci
 ## Diagrama de Robustez
 Vista de infraestructura lógica que detalla colas, workers y escalabilidad.
 
-![](./Diagramas/robustez.jpg)
+![](./Diagramas/robustez.png)
 
 
 ## Diagramas de Secuencia
@@ -61,7 +61,16 @@ Total Parquet size: 44.42 GiB
 
 
 ### Supuestos
-- La idea es DISEÑARLO para que soporte los 10 millones de registros pero en pruebas locales se hace con un volumen reducido
+- La idea es DISEÑARLO para que soporte los 10 millones de registros pero en pruebas locales se hace con un volumen reducido.
+
+
+### Manejo de EOF
+
+Para manejar los EOF en el sistema. utilizaremos el funcionamiento FIFO de la cola para asi notificar a cada entidad que el cliente termino de enviar todos sus articulos. Para que esto funcione correctamente cada entidad tendra su propia cola de trabajo. En la imagen siguiente se muestra un diagrama detallando esto.
+![](./Diagramas/filter_example.png)
+
+El proceso es el siguiente,la entidad encargada de filtrar recibira el EOF de un determinado cliente, al recibirlo hara un fanout del mensaje hacia las 3 colas de trabajo de las entidades de SWE.Cada entidad SWE sabe por configuracion cuantas entidades de filter 2020 hay, al recibir el EOF, registrara para que cliente es y aumentara un contador de EOF recibidos, cuando el contador alcance la misma cantidad de instancia de filtrado, el SWE propagara su EOF hacia las demas etapas de computo. Las instancias del sistema que escalan, funcionaran de manera analoga para realizar sus operaciones y liberan estados asociados al cliente que envio el EOF.
+
 
 
 
